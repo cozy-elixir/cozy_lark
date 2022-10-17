@@ -80,11 +80,15 @@ defmodule CozyLark.EventSubscription do
   """
 
   alias __MODULE__.Event
+  alias __MODULE__.Config
+  alias __MODULE__.Opts
 
-  def process_event(%{"encrypt" => encrypted_data} = _payload, config, opts) do
-    {config, opts} = validate_config_and_opts!(config, opts)
+  def process_event(config, %{"encrypt" => encrypted_data} = _payload, opts)
+      when is_map(config) do
+    config = Config.validate_config!(config)
+    opts = Opts.validate_opts!(opts, config)
 
-    encrypt_key = config[:encrypt_key]
+    encrypt_key = config.encrypt_key
 
     unless encrypt_key do
       raise RuntimeError, "decrypting encrypted event requires config :encrypt_key"
@@ -98,139 +102,38 @@ defmodule CozyLark.EventSubscription do
     end
   end
 
-  def process_event(payload, config, opts) do
+  def process_event(config, payload, opts) when is_map(config) do
     with :ok <- post_verify_event(config, opts, payload) do
       respond(payload)
     end
   end
 
-  @doc false
-  def validate_config_and_opts!(config, opts) when is_map(config) and is_list(opts) do
-    {config, opts}
-    |> cast_config_and_opts()
-    |> validate_security_verification_method!()
-    |> validate_required_config!()
-    |> validate_signature_factors!()
-  end
-
-  defp cast_config_and_opts({config, opts}) do
-    config = Map.take(config, [:verification_token, :encrypt_key])
-
-    opts =
-      Enum.into(
-        [{:security_verification_method, :verification_token}],
-        %{},
-        fn {name, default_value} ->
-          {name, Keyword.get(opts, name, default_value)}
-        end
-      )
-
-    {config, opts}
-  end
-
-  defp validate_security_verification_method!({config, opts}) do
-    opt_key = :security_verification_method
-    current_method = Map.get(opts, opt_key)
-
-    case current_method do
-      :verification_token ->
-        {config, opts}
-
-      {:signature, _factors} ->
-        {config, opts}
-
-      _ ->
-        raise "unknown value of option #{inspect(opt_key)} - #{inspect(current_method)}"
-    end
-  end
-
-  defp validate_required_config!(
-         {config, %{security_verification_method: :verification_token} = opts}
-       ) do
-    if match?(%{verification_token: token} when is_binary(token), config) do
-      {config, opts}
-    else
-      raise ArgumentError,
-            "option [security_verification_method: :verification_token] requires config :verfication_token"
-    end
-  end
-
-  defp validate_required_config!(
-         {config, %{security_verification_method: {:signature, _factors}} = opts}
-       ) do
-    if match?(
-         %{verification_token: token, encrypt_key: key} when is_binary(token) and is_binary(key),
-         config
-       ) do
-      {config, opts}
-    else
-      raise ArgumentError,
-            "option [security_verification_method: {:signature, _}] requires config :verfication_token and :encrypt_key"
-    end
-  end
-
-  defp validate_signature_factors!(
-         {config, %{security_verification_method: {:signature, factors}} = opts}
-       ) do
-    if match?(
-         %{
-           raw_body: raw_body,
-           timestamp: timestamp,
-           nonce: nonce,
-           signature: signature
-         }
-         when is_binary(raw_body) and
-                is_binary(timestamp) and
-                is_binary(nonce) and
-                is_binary(signature),
-         factors
-       ) do
-      {config, opts}
-    else
-      raise ArgumentError,
-            Enum.join(
-              [
-                "option [security_verification_method: {:signature, factors}] requires the factors to be a map with following keys:",
-                "+ raw_body",
-                "+ timestamp",
-                "+ nonce",
-                "+ signature"
-              ],
-              "\n"
-            )
-    end
-  end
-
-  defp validate_signature_factors!({config, opts}) do
-    {config, opts}
-  end
-
   defp pre_verify_event(
-         %{encrypt_key: encrypt_key} = _config,
-         %{security_verification_method: {:signature, factors}} = _opts
+         %Config{encrypt_key: encrypt_key},
+         %Opts{security_verification_method: {:signature, factors}}
        ) do
     verify_event_with_signature(encrypt_key, factors)
   end
 
-  defp pre_verify_event(_config, _opts), do: :ok
+  defp pre_verify_event(%Config{}, %Opts{}), do: :ok
 
   defp post_verify_event(
-         %{verification_token: verification_token} = _config,
-         %{security_verification_method: :verification_token} = _opts,
+         %Config{verification_token: verification_token},
+         %Opts{security_verification_method: :verification_token},
          %{"type" => "url_verification", "token" => event_verification_token} = _payload
        ) do
     verify_event_with_verification_token(verification_token, event_verification_token)
   end
 
   defp post_verify_event(
-         %{verification_token: verification_token} = _config,
-         %{security_verification_method: :verification_token} = _opts,
+         %Config{verification_token: verification_token},
+         %Opts{security_verification_method: :verification_token},
          %{"schema" => "2.0", "header" => %{"token" => event_verification_token}} = _payload
        ) do
     verify_event_with_verification_token(verification_token, event_verification_token)
   end
 
-  defp post_verify_event(_config, _opts, _payload), do: :ok
+  defp post_verify_event(%Config{}, %Opts{}, _payload), do: :ok
 
   defp verify_event_with_verification_token(verification_token, event_verification_token) do
     if verification_token == event_verification_token,

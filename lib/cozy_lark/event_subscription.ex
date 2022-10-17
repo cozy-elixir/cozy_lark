@@ -2,7 +2,7 @@ defmodule CozyLark.EventSubscription do
   @moduledoc """
   Provides utilities of event subscription:
   + resolving the challenge request when configuring the request URL.
-  + transforming version 2.0 event into `CozyLark.EventSubscription.Event`.
+  + transforming V2.0 events into `CozyLark.EventSubscription.Event`.
 
   Read more at [Subscribe to events](https://open.feishu.cn/document/ukTMukTMukTM/uUTNz4SN1MjL1UzM).
 
@@ -18,6 +18,13 @@ defmodule CozyLark.EventSubscription do
   6. receive and process events
 
   Utilities provided by this module can be used at step 3 and 6.
+
+  ## supported events
+
+  The full list of events can be found at
+  [Getting Started - Event list](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-list).
+
+  Only the V2.0 events are supported.
 
   # Usage
 

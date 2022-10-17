@@ -186,16 +186,17 @@ defmodule CozyLark.EventSubscription do
       "app_id" => app_id
     } = header
 
-    Event.new(%{
-      id: event_id,
-      type: event_type,
-      content: event_content,
-      created_at: convert_timestamp_to_datetime(create_time),
-      meta: %{
-        tenant_key: tenant_key,
-        app_id: app_id
-      }
-    })
+    {:ok,
+     Event.new(%{
+       id: event_id,
+       type: event_type,
+       content: event_content,
+       created_at: convert_timestamp_to_datetime(create_time),
+       meta: %{
+         tenant_key: tenant_key,
+         app_id: app_id
+       }
+     })}
   end
 
   defp respond(other) do

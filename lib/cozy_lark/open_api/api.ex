@@ -57,21 +57,16 @@ defmodule CozyLark.OpenAPI.API do
       url = Domain.build_url!(domain, path)
 
       with {:ok, access_token} <- AccessToken.get_access_token(config, auth_type),
-           {:ok, response} <-
+           {:ok, %{"code" => 0} = response} <-
              HTTPClient.request_json(
                method,
                url,
                %{"Authorization" => "Bearer #{access_token}"},
                query_params,
                body_params
-             ),
-           %{"code" => code} <- response do
-        if code == 0 do
-          data = Map.fetch!(response, "data")
-          {:ok, data}
-        else
-          {:error, {:server_error_code, code}}
-        end
+             ) do
+        data = Map.fetch!(response, "data")
+        {:ok, data}
       end
     end
   end

@@ -44,14 +44,11 @@ defmodule CozyLark.OpenAPI.AccessToken do
     url = Domain.build_url!(domain, path)
     body = %{app_id: app_id, app_secret: app_secret}
 
-    with {:ok, response} <- HTTPClient.request_json(method, url, %{}, %{}, body),
-         %{"code" => code} <- response do
-      if code == 0 do
-        access_token = Map.fetch!(response, to_string(access_token_type))
-        {:ok, access_token}
-      else
-        {:error, {:server_error_code, code}}
-      end
+    with {:ok, %{"code" => 0} = response} <-
+           HTTPClient.request_json(method, url, %{}, %{}, body),
+         %{"code" => 0} <- response do
+      access_token = Map.fetch!(response, to_string(access_token_type))
+      {:ok, access_token}
     end
   end
 

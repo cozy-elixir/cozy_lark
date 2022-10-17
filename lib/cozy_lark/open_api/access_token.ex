@@ -4,6 +4,14 @@ defmodule CozyLark.OpenAPI.AccessToken do
 
   Read more at
   [Related API - Access Token](https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal).
+
+  # Overview
+
+  There're 3 types of access tokens:
+  + `app_access_token`
+  + `tenant_access_token`
+  + `user_access_token`
+
   """
 
   alias CozyLark.HTTPClient

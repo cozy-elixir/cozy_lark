@@ -12,6 +12,12 @@ defmodule CozyLark.HTTPClient do
       {:ok, %Finch.Response{status: 200, body: body}} ->
         {:ok, Jason.decode!(body)}
 
+      {:ok, %Finch.Response{status: status, body: body}} when status >= 400 and status < 500 ->
+        {:error, {:client_error, Jason.decode!(body)}}
+
+      {:ok, %Finch.Response{status: status, body: body}} when status >= 500 ->
+        {:error, {:server_error, Jason.decode!(body)}}
+
       {:error, error} ->
         {:error, error}
     end

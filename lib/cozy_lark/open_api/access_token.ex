@@ -26,7 +26,7 @@ defmodule CozyLark.OpenAPI.AccessToken do
         %Config{
           app_id: app_id,
           app_secret: app_secret,
-          app_type: :custom_app = app_type,
+          app_type: app_type,
           domain: domain
         },
         access_token_type

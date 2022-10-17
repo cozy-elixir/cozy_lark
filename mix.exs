@@ -19,7 +19,9 @@ defmodule CozyLark.MixProject do
 
   defp deps do
     [
-      {:jason, ">= 1.0.0"}
+      {:jason, ">= 1.0.0"},
+      {:finch, "~> 0.13"},
+      {:con_cache, "~> 1.0"}
     ]
   end
 end

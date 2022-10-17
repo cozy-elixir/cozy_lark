@@ -65,6 +65,11 @@ defmodule CozyLark.EventSubscription do
        }}
      )
 
+  # More details
+
+  + [Event processing method - Security verification](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-subscription-configure-/encrypt-key-encryption-configuration-case?lang=en-US#d41e8916).
+  + [Event processing method - Event decryption](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-subscription-configure-/encrypt-key-encryption-configuration-case?lang=en-US#58c980bc).
+
   """
 
   alias __MODULE__.Event
@@ -220,7 +225,6 @@ defmodule CozyLark.EventSubscription do
 
   defp post_verify_event(_config, _opts, _payload), do: :ok
 
-  # read more at [Event processing method - Security verification](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-subscription-configure-/encrypt-key-encryption-configuration-case?lang=en-US#d41e8916).
   defp verify_event_with_verification_token(verification_token, event_verification_token) do
     if verification_token == event_verification_token,
       do: :ok,
@@ -243,7 +247,6 @@ defmodule CozyLark.EventSubscription do
   end
 
   @doc false
-  # Read more at [Event processing method - Event decryption](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-subscription-configure-/encrypt-key-encryption-configuration-case?lang=en-US#58c980bc).
   def decrypt_event(encrypt_key, encrypted_data) when is_binary(encrypted_data) do
     key = :crypto.hash(:sha256, encrypt_key)
     <<iv::binary-size(16), encrypted_event::binary>> = Base.decode64!(encrypted_data)

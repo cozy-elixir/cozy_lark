@@ -13,7 +13,8 @@ defmodule CozyLark.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :crypto]
+      extra_applications: [:logger, :crypto],
+      mod: {CozyLark.Application, []}
     ]
   end
 

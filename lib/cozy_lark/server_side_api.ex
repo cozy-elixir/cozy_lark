@@ -1,6 +1,6 @@
-defmodule CozyLark.OpenAPI do
+defmodule CozyLark.ServerSideAPI do
   @moduledoc """
-  Provides utilities of calling open API.
+  Provides utilities of calling server-side API.
 
   Read more at
   [Getting Started - Calling the API](https://open.feishu.cn/document/ukTMukTMukTM/uITNz4iM1MjLyUzM).
@@ -9,7 +9,7 @@ defmodule CozyLark.OpenAPI do
 
   ## supported API
 
-  Read more at `CozyLark.OpenAPI.API`.
+  Read more at `CozyLark.ServerSideAPI.API`.
 
   # Usage
 

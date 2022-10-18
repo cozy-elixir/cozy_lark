@@ -1,4 +1,4 @@
-defmodule CozyLark.OpenAPI.API do
+defmodule CozyLark.ServerSideAPI.API do
   @moduledoc """
   Provides utilities of calling API.
 
@@ -13,9 +13,9 @@ defmodule CozyLark.OpenAPI.API do
   """
 
   alias CozyLark.HTTPClient
-  alias CozyLark.OpenAPI.Config
-  alias CozyLark.OpenAPI.Domain
-  alias CozyLark.OpenAPI.AccessToken
+  alias CozyLark.ServerSideAPI.Config
+  alias CozyLark.ServerSideAPI.Domain
+  alias CozyLark.ServerSideAPI.AccessToken
 
   @supported_api %{
     "/im/v1/messages" => %{

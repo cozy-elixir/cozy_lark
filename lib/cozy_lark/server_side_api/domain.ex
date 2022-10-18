@@ -1,4 +1,4 @@
-defmodule CozyLark.OpenAPI.Domain do
+defmodule CozyLark.ServerSideAPI.Domain do
   def build_url!(domain, path) do
     domain
     |> fetch_base_url!()

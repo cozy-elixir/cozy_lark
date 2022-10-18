@@ -1,4 +1,4 @@
-defmodule CozyLark.OpenAPI.Config do
+defmodule CozyLark.ServerSideAPI.Config do
   @enforce_keys [:app_id, :app_secret, :app_type, :domain]
   defstruct @enforce_keys
 

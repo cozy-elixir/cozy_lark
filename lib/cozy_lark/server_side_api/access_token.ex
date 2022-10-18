@@ -1,4 +1,4 @@
-defmodule CozyLark.OpenAPI.AccessToken do
+defmodule CozyLark.ServerSideAPI.AccessToken do
   @moduledoc """
   Provides utilities of getting access token.
 
@@ -15,8 +15,8 @@ defmodule CozyLark.OpenAPI.AccessToken do
   """
 
   alias CozyLark.HTTPClient
-  alias CozyLark.OpenAPI.Config
-  alias CozyLark.OpenAPI.Domain
+  alias CozyLark.ServerSideAPI.Config
+  alias CozyLark.ServerSideAPI.Domain
 
   @supported_api %{
     {:custom_app, :tenant_access_token} => %{

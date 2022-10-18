@@ -83,7 +83,7 @@ defmodule CozyLark.EventSubscription do
   alias __MODULE__.Config
   alias __MODULE__.Opts
 
-  def process_event(config, %{"encrypt" => encrypted_data} = _payload, opts)
+  def receive_event(config, %{"encrypt" => encrypted_data} = _payload, opts)
       when is_map(config) do
     config = Config.validate_config!(config)
     opts = Opts.validate_opts!(opts, config)
@@ -102,7 +102,7 @@ defmodule CozyLark.EventSubscription do
     end
   end
 
-  def process_event(config, payload, opts) when is_map(config) do
+  def receive_event(config, payload, opts) when is_map(config) do
     with :ok <- post_verify_event(config, opts, payload) do
       respond(payload)
     end
@@ -174,7 +174,7 @@ defmodule CozyLark.EventSubscription do
          "type" => "url_verification",
          "challenge" => challenge
        }) do
-    {:ok, %{challenge: challenge}}
+    {:ok, {:challenge, challenge}}
   end
 
   defp respond(%{"schema" => "2.0", "header" => header, "event" => event_content}) do
@@ -186,21 +186,23 @@ defmodule CozyLark.EventSubscription do
       "app_id" => app_id
     } = header
 
-    {:ok,
-     Event.new(%{
-       id: event_id,
-       type: event_type,
-       content: event_content,
-       created_at: convert_timestamp_to_datetime(create_time),
-       meta: %{
-         tenant_key: tenant_key,
-         app_id: app_id
-       }
-     })}
+    event =
+      Event.new(%{
+        id: event_id,
+        type: event_type,
+        content: event_content,
+        created_at: convert_timestamp_to_datetime(create_time),
+        meta: %{
+          tenant_key: tenant_key,
+          app_id: app_id
+        }
+      })
+
+    {:ok, {:event, event}}
   end
 
   defp respond(other) do
-    other
+    {:error, {:unknown_event, other}}
   end
 
   defp convert_timestamp_to_datetime(timestamp) when is_binary(timestamp) do

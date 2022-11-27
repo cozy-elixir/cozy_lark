@@ -1,8 +1,6 @@
 # CozyLark
 
-> Elixir SDK of [Lark](https://www.larksuite.com/) Open Platform.
-
-> This SDK also works for [Feishu](https://www.feishu.cn/) which is the China-only equivalent of Lark.
+> An SDK builder for [Lark](https://www.larksuite.com/) Open Platform / [Feishu](https://www.feishu.cn/) Open Platform.
 
 ## Installation
 

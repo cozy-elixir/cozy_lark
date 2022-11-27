@@ -1,6 +1,6 @@
 defmodule CozyLark do
   @moduledoc """
-  Elixir SDK of Lark Open Platform.
+  An SDK builder of Lark Open Platform / Feishu Open Platform.
 
   Developing Lark application is all about:
 

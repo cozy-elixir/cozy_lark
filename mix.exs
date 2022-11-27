@@ -2,8 +2,8 @@ defmodule CozyLark.MixProject do
   use Mix.Project
 
   @version "0.2.0"
+  @description "An SDK builder of Lark Open Platform / Feishu Open Platform."
   @source_url "https://github.com/cozy-elixir/cozy_lark"
-  @description "Elixir SDK of Lark Open Platform."
 
   def project do
     [
@@ -12,14 +12,11 @@ defmodule CozyLark.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      # doc
       description: @description,
       source_url: @source_url,
       homepage_url: @source_url,
       docs: docs(),
-      # package
       package: package(),
-      # aliases
       aliases: aliases()
     ]
   end

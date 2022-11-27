@@ -12,9 +12,9 @@ defmodule CozyLark.EventSubscription.Event do
   @type t :: %__MODULE__{
           id: String.t(),
           type: String.t(),
-          content: Map.t(),
+          content: map(),
           created_at: DateTime.t(),
-          meta: Map.t()
+          meta: map()
         }
 
   def new(args) do

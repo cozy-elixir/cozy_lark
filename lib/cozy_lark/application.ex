@@ -7,13 +7,13 @@ defmodule CozyLark.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      {Finch, name: CozyLark.HTTPClient}
-    ]
+    CozyLark.ServerSideAPI.Client.init()
+
+    children = []
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Demo.Supervisor]
+    opts = [strategy: :one_for_one, name: CozyLark.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

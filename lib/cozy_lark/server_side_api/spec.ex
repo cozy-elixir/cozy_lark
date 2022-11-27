@@ -1,9 +1,6 @@
 defmodule CozyLark.ServerSideAPI.Spec do
   @moduledoc """
   Describes the specification of a server-side API.
-
-  Read more at
-  [Getting Started - Calling the API](https://open.feishu.cn/document/ukTMukTMukTM/uITNz4iM1MjLyUzM).
   """
 
   @enforce_keys [
@@ -25,7 +22,7 @@ defmodule CozyLark.ServerSideAPI.Spec do
   @typedoc """
   The type of access token which is used by this API.
   """
-  @type access_token_type() :: :app_access_token | :tenant_access_token | :user_access_token
+  @type access_token_type() :: :tenant_access_token | :app_access_token | :user_access_token | nil
 
   @typedoc """
   API method.
@@ -96,7 +93,7 @@ defmodule CozyLark.ServerSideAPI.Spec do
           "key :access_token_type, :method, :path are required in a spec"
   end
 
-  @supported_access_token_types [:app_access_token, :tenant_access_token, :user_access_token]
+  @supported_access_token_types [:tenant_access_token, :app_access_token, :user_access_token, nil]
   defp validate_access_token_type!(%{access_token_type: type} = config)
        when type in @supported_access_token_types do
     config

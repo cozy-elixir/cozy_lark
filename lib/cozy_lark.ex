@@ -12,4 +12,7 @@ defmodule CozyLark do
   + `CozyLark.ServerSideAPI`
   + `CozyLark.EventSubscription`
   """
+
+  @doc false
+  def json_library, do: Application.fetch_env!(:cozy_lark, :json_library)
 end

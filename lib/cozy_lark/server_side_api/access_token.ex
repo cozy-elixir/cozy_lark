@@ -8,51 +8,113 @@ defmodule CozyLark.ServerSideAPI.AccessToken do
   # Overview
 
   There're 3 types of access tokens:
+
   + `app_access_token`
   + `tenant_access_token`
-  + `user_access_token`
+  + `user_access_token` (not supported for now)
 
   """
 
-  alias CozyLark.HTTPClient
+  require Logger
   alias CozyLark.ServerSideAPI.Config
-  alias CozyLark.ServerSideAPI.Domain
+  alias CozyLark.ServerSideAPI.Spec
+  alias CozyLark.ServerSideAPI.Request
+  alias CozyLark.ServerSideAPI.Client
 
-  @supported_api %{
-    {:custom_app, :tenant_access_token} => %{
-      method: :post,
-      path: "/auth/v3/tenant_access_token/internal"
-    },
-    {:custom_app, :app_access_token} => %{
-      method: :post,
-      path: "/auth/v3/app_access_token/internal"
-    }
-  }
+  def maybe_set_access_token(%Request{} = req) do
+    %{config: config} = req.private
+    %{access_token_type: type} = req.meta
 
-  # TODO: add cache
-  def get_access_token(
-        %Config{
-          app_id: app_id,
-          app_secret: app_secret,
-          app_type: app_type,
-          domain: domain
-        },
-        access_token_type
-      )
-      when access_token_type in [:tenant_access_token, :app_access_token] do
-    %{method: method, path: path} = fetch_api_info!(app_type, access_token_type)
-    url = Domain.build_url!(domain, path)
-    body = %{app_id: app_id, app_secret: app_secret}
-
-    with {:ok, %{"code" => 0} = response} <-
-           HTTPClient.request_json(method, url, %{}, %{}, body),
-         %{"code" => 0} <- response do
-      access_token = Map.fetch!(response, to_string(access_token_type))
-      {:ok, access_token}
+    with {:ok, {access_token, _expire}} <- get_access_token(config, type) do
+      Request.set_header(req, "authorization", "Bearer #{access_token}")
+    else
+      _ ->
+        Logger.error("failed to get access token", app: "cozy_lark")
+        req
     end
   end
 
-  defp fetch_api_info!(app_type, access_token_type) do
-    Map.fetch!(@supported_api, {app_type, access_token_type})
+  def get_access_token(%Config{} = config, type) do
+    # TODO: cache access_token based on {config, type}
+
+    {spec, access_token_key, expire_key} =
+      get_spec({config.app_type, type}, config.app_id, config.app_secret)
+
+    response =
+      spec
+      |> then(&Request.build!(config, &1))
+      |> Client.request()
+
+    with {
+           :ok,
+           200,
+           _headers,
+           %{"code" => 0, ^access_token_key => access_token, ^expire_key => expire}
+         } <-
+           response do
+      {:ok, {access_token, expire}}
+    else
+      _ -> {:error, :failed_to_get_access_token}
+    end
+  end
+
+  defp get_spec({:custom_app, :tenant_access_token}, app_id, app_secret) do
+    spec =
+      Spec.build!(%{
+        access_token_type: nil,
+        method: "POST",
+        path: "/auth/v3/tenant_access_token/internal",
+        body: %{
+          app_id: app_id,
+          app_secret: app_secret
+        }
+      })
+
+    {spec, "tenant_access_token", "expire"}
+  end
+
+  defp get_spec({:custom_app, :app_access_token}, app_id, app_secret) do
+    spec =
+      Spec.build!(%{
+        access_token_type: nil,
+        method: "POST",
+        path: "/auth/v3/app_access_token/internal",
+        body: %{
+          app_id: app_id,
+          app_secret: app_secret
+        }
+      })
+
+    {spec, "app_access_token", "expire"}
+  end
+
+  defp get_spec({:store_app, :tenant_access_token}, app_id, app_secret) do
+    spec =
+      Spec.build!(%{
+        access_token_type: nil,
+        method: "POST",
+        path: "/auth/v3/tenant_access_token",
+        body: %{
+          app_id: app_id,
+          app_secret: app_secret
+        }
+      })
+
+    {spec, "tenant_access_token", "expire"}
+  end
+
+  defp get_spec({:store_app, :app_access_token}, app_id, app_secret) do
+    spec =
+      Spec.build!(%{
+        access_token_type: nil,
+        method: "POST",
+        path: "/auth/v3/app_access_token",
+        body: %{
+          app_id: app_id,
+          app_secret: app_secret
+        }
+      })
+
+    {spec, "app_access_token", "expire"}
   end
 end

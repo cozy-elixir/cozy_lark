@@ -24,15 +24,16 @@ defmodule CozyLark.MixProject do
   def application do
     [
       extra_applications: [:logger, :crypto],
-      mod: {CozyLark.Application, []}
+      mod: {CozyLark.Application, []},
+      env: [json_library: Jason, server_side_api_client: CozyLark.ServerSideAPI.Client.Finch]
     ]
   end
 
   defp deps do
     [
-      {:jason, ">= 1.0.0"},
-      {:finch, "~> 0.13"},
       {:con_cache, "~> 1.0"},
+      {:jason, "~> 1.0"},
+      {:finch, "~> 0.13", only: [:dev, :test]},
       {:ex_doc, "~> 0.25", only: :dev, runtime: false}
     ]
   end

@@ -8,10 +8,10 @@ defmodule CozyLark.ServerSideAPI.RequestTest do
     test "builds a %Request{} struct" do
       config =
         Config.new!(%{
-          app_id: "...",
-          app_secret: "...",
+          platform: :lark,
           app_type: :custom_app,
-          domain: :lark
+          app_id: "...",
+          app_secret: "..."
         })
 
       spec =
@@ -44,12 +44,11 @@ defmodule CozyLark.ServerSideAPI.RequestTest do
           uuid: "a0d69e20-1dd1-458b-k525-dfeca4015204"
         },
         private: %{
-          access_token_type: :tenant_access_token,
-          app_id: "...",
-          app_secret: "...",
-          app_type: :custom_app
+          config: ^config
         },
-        meta: %{}
+        meta: %{
+          access_token_type: :tenant_access_token
+        }
       } = Request.build!(config, spec)
     end
   end

@@ -1,64 +1,66 @@
 defmodule CozyLark.ServerSideAPI.Config do
-  @enforce_keys [:app_id, :app_secret, :app_type, :domain]
+  @enforce_keys [:platform, :app_type, :app_id, :app_secret]
   defstruct @enforce_keys
 
   @type config() :: %{
-          app_id: String.t(),
-          app_secret: String.t(),
+          platform: :lark | :feishu,
           app_type: :custom_app | :store_app,
-          domain: :lark | :feishu
+          app_id: String.t(),
+          app_secret: String.t()
         }
 
   @type t :: %__MODULE__{
-          app_id: String.t(),
-          app_secret: String.t(),
+          platform: :lark | :feishu,
           app_type: :custom_app | :store_app,
-          domain: :lark | :feishu
+          app_id: String.t(),
+          app_secret: String.t()
         }
 
   @spec new!(config()) :: t()
   def new!(config) do
     config
     |> validate_required_keys!()
+    |> validate_platform!()
     |> validate_app_type!()
-    |> validate_domain!()
     |> as_struct!()
   end
 
   defp validate_required_keys!(config) do
     if match?(
-         %{app_id: app_id, app_secret: app_secret}
-         when is_binary(app_id) and is_binary(app_secret),
+         %{platform: platform, app_type: app_type, app_id: app_id, app_secret: app_secret}
+         when is_atom(platform) and
+                is_atom(app_type) and
+                is_binary(app_id) and
+                is_binary(app_secret),
          config
        ) do
       config
     else
-      raise ArgumentError, "key :app_id, :app_secret, :app_type, :domain are required"
+      raise ArgumentError, "key :platform, :app_type, :app_id, :app_secret are required"
+    end
+  end
+
+  defp validate_platform!(config) do
+    available_platforms = [:lark, :feishu]
+    current_platform = config.platform
+
+    if current_platform in available_platforms do
+      config
+    else
+      raise ArgumentError,
+            "unknown value of key :platform - #{inspect(current_platform)}"
     end
   end
 
   defp validate_app_type!(config) do
-    config_key = :app_type
     available_app_types = [:custom_app, :store_app]
-    current_app_type = Map.get(config, config_key)
+    current_app_type = config.app_type
 
     if current_app_type in available_app_types do
       config
     else
       raise ArgumentError,
-            "the value of key :app_type must be one of #{inspect(available_app_types)}"
-    end
-  end
-
-  defp validate_domain!(config) do
-    config_key = :domain
-    available_domains = [:lark, :feishu]
-    current_domain = Map.get(config, config_key)
-
-    if current_domain in available_domains do
-      config
-    else
-      raise ArgumentError, "the value of key :domain must be one of #{inspect(available_domains)}"
+            "unknown value of key :app_type - #{inspect(current_app_type)}"
     end
   end
 

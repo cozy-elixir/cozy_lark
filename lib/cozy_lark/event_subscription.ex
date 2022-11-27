@@ -1,6 +1,7 @@
 defmodule CozyLark.EventSubscription do
   @moduledoc """
-  Provides utilities of event subscription:
+  Provides utilities of handling event subscription.
+
   + resolving the challenge request when configuring the request URL.
   + transforming V2.0 events into `CozyLark.EventSubscription.Event`.
 

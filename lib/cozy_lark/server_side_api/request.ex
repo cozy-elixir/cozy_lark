@@ -1,6 +1,6 @@
 defmodule CozyLark.ServerSideAPI.Request do
   @moduledoc """
-  Converts `%CozyLark.ServerSideAPI.Spec{}` to a `%CozyLark.ServerSideAPI.Request{}`.
+
   """
 
   defstruct [
@@ -17,47 +17,53 @@ defmodule CozyLark.ServerSideAPI.Request do
   ]
 
   @typedoc """
-  Request scheme.
+  The request scheme.
   """
-  @type scheme() :: :https
+  @type scheme() :: String.t()
 
   @typedoc """
-  Request method.
+  The request method.
   """
   @type method() :: String.t()
 
   @typedoc """
-  Request path.
+  The request path.
   """
   @type path() :: String.t()
 
   @typedoc """
-  Optional request query.
+  The optional request query.
   """
   @type query() :: %{
           optional(query_name :: String.t()) => query_value :: boolean() | number() | String.t()
         }
 
   @typedoc """
-  Request headers.
+  The request headers.
   """
   @type headers() :: %{optional(header_name :: String.t()) => header_value :: String.t()}
 
   @typedoc """
-  Optional request body.
+  The optional request body.
   """
   @type body() :: map() | nil
 
+  @typedoc """
+  The request metadata.
+  """
   @type meta() :: %{optional(atom()) => term()}
 
+  @typedoc """
+  The request private information, which is useful for passing data to other modules.
+  """
   @type private() :: %{optional(atom()) => term()}
 
   @type t :: %__MODULE__{
           scheme: scheme(),
-          host: String.t() | nil,
+          host: String.t(),
           port: :inet.port_number(),
           method: method(),
-          path: String.t(),
+          path: path(),
           query: query(),
           headers: headers(),
           body: body(),
@@ -68,6 +74,9 @@ defmodule CozyLark.ServerSideAPI.Request do
   alias CozyLark.ServerSideAPI.Config
   alias CozyLark.ServerSideAPI.Spec
 
+  @doc """
+  Builds a request from a config and an spec.
+  """
   @spec build!(Config.t(), Spec.t()) :: t()
   def build!(%Config{} = config, %Spec{} = spec) do
     build_request(config, spec)
@@ -112,13 +121,12 @@ defmodule CozyLark.ServerSideAPI.Request do
     }
   end
 
-  def fetch_base_url!(platform) do
-    urls = %{
-      lark: "https://open.larksuite.com/open-apis",
-      feishu: "https://open.feishu.cn/open-apis"
-    }
-
-    Map.fetch!(urls, platform)
+  @base_urls %{
+    lark: "https://open.larksuite.com/open-apis",
+    feishu: "https://open.feishu.cn/open-apis"
+  }
+  defp fetch_base_url!(platform) do
+    Map.fetch!(@base_urls, platform)
   end
 
   defp parse_base_url(url) when is_binary(url) do

@@ -3,7 +3,7 @@ defmodule CozyLark.ServerSideAPI.ConfigTest do
   alias CozyLark.ServerSideAPI.Config
 
   describe "new!/1" do
-    test "creates a %Config{} struct" do
+    test "creates a struct %Config{}" do
       assert %Config{app_type: _, platform: _, app_id: _, app_secret: _} =
                Config.new!(%{
                  platform: :lark,
@@ -13,7 +13,7 @@ defmodule CozyLark.ServerSideAPI.ConfigTest do
                })
     end
 
-    test "check invalid platform" do
+    test "raises invalid platform" do
       assert_raise ArgumentError,
                    "unknown value of key :platform - :luck",
                    fn ->
@@ -26,7 +26,7 @@ defmodule CozyLark.ServerSideAPI.ConfigTest do
                    end
     end
 
-    test "check invalid app_type" do
+    test "raises invalid app_type" do
       assert_raise ArgumentError,
                    "unknown value of key :app_type - :luck_app",
                    fn ->

@@ -20,34 +20,34 @@ defmodule CozyLark.ServerSideAPI.Spec do
             body: nil
 
   @typedoc """
-  The type of access token which is used by this API.
+  The type of access token which is used by current API.
   """
   @type access_token_type() :: :tenant_access_token | :app_access_token | :user_access_token | nil
 
   @typedoc """
-  API method.
+  The API method.
   """
   @type method() :: String.t()
 
   @typedoc """
-  API path.
+  The API path.
   """
   @type path() :: String.t()
 
   @typedoc """
-  API query.
+  The API query.
   """
   @type query() :: %{
           optional(query_name :: String.t()) => query_value :: boolean() | number() | String.t()
         }
 
   @typedoc """
-  API headers.
+  The API headers.
   """
   @type headers() :: %{optional(header_name :: String.t()) => header_value :: String.t()}
 
   @typedoc """
-  Optional API body.
+  The optional API body.
   """
   @type body() :: map() | nil
 
@@ -69,6 +69,9 @@ defmodule CozyLark.ServerSideAPI.Spec do
           body: body()
         }
 
+  @doc """
+  Builds an spec from a give map.
+  """
   @spec build!(config()) :: t()
   def build!(config) when is_map(config) do
     config
@@ -90,7 +93,7 @@ defmodule CozyLark.ServerSideAPI.Spec do
 
   defp validate_required_keys!(_config) do
     raise ArgumentError,
-          "key :access_token_type, :method, :path are required in a spec"
+          "key :access_token_type, :method, :path are required"
   end
 
   @supported_access_token_types [:tenant_access_token, :app_access_token, :user_access_token, nil]

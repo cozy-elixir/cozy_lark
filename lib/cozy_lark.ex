@@ -2,7 +2,7 @@ defmodule CozyLark do
   @moduledoc """
   An SDK builder of Lark Open Platform / Feishu Open Platform.
 
-  Developing Lark application is all about:
+  Developing Lark / Feishu application is all about:
 
   + server-side API calling
   + event subscription
@@ -11,6 +11,7 @@ defmodule CozyLark do
 
   + `CozyLark.ServerSideAPI`
   + `CozyLark.EventSubscription`
+
   """
 
   @doc false

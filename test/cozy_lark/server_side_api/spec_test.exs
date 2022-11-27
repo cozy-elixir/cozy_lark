@@ -14,7 +14,7 @@ defmodule CozyLark.ServerSideAPI.SpecTest do
 
     test "raises ArgumentError when required keys are missing" do
       assert_raise ArgumentError,
-                   "key :access_token_type, :method, :path are required in a spec",
+                   "key :access_token_type, :method, :path are required",
                    fn ->
                      Spec.build!(%{})
                    end

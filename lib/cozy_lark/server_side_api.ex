@@ -2,11 +2,42 @@ defmodule CozyLark.ServerSideAPI do
   @moduledoc """
   Provides utilities of calling server-side API.
 
-  See [Getting Started - Calling the API](https://open.feishu.cn/document/ukTMukTMukTM/uITNz4iM1MjLyUzM)
-  for a quick start.
+  ## Basic concepts
 
-  See [Getting Started - API list](https://open.feishu.cn/document/ukTMukTMukTM/uYTM5UjL2ETO14iNxkTN/server-api-list)
-  for the full list of supported API.
+  + [calling the API](https://open.feishu.cn/document/ukTMukTMukTM/uITNz4iM1MjLyUzM)
+  + [full list of supported API](https://open.feishu.cn/document/ukTMukTMukTM/uYTM5UjL2ETO14iNxkTN/server-api-list)
+
+  ## Usage
+
+      defmodule GroupManager do
+        alias CozyLark.ServerSideAPI
+        alias CozyLark.ServerSideAPI.Config
+
+        def list_groups() do
+          config()
+          |> ServerSideAPI.build!(%{
+            access_token_type: :tenant_access_token,
+            method: "GET",
+            path: "/im/v1/chats"
+          })
+          |> ServerSideAPI.request()
+        end
+
+        defp config() do
+          :demo
+          |> Application.fetch_env!(__MODULE__)
+          |> Enum.into(%{})
+          |> Config.new!()
+        end
+      end
+
+      # config/runtime.exs
+      config :demo, GroupManager,
+        platform: :feishu,
+        app_type: :custom_app,
+        app_id: System.fetch_env!("COZY_LARK_APP_ID"),
+        app_secret: System.fetch_env!("COZY_LARK_APP_SECRET")
+
   """
 
   alias __MODULE__.Config
@@ -16,9 +47,10 @@ defmodule CozyLark.ServerSideAPI do
   alias __MODULE__.Client
 
   @doc """
-  Bulids a struct `%CozyLark.ServerSideAPI.Request{}`.
+  Bulids a struct that represents a server-side API request.
 
-  See `CozyLark.ServerSideAPI.build!/2` for more information.
+  See `CozyLark.ServerSideAPI.Spec.build!/1` and `CozyLark.ServerSideAPI.Request.build!/2` for more
+  information.
   """
   @spec build!(Config.t(), Spec.config()) :: any()
   def build!(%Config{} = config, spec_config) do
@@ -26,7 +58,12 @@ defmodule CozyLark.ServerSideAPI do
     Request.build!(config, spec)
   end
 
-  def request(req) do
+  @doc """
+  Sends the server-side API request.
+
+  Before sending the request, this function will try to set access token on the request automatically.
+  """
+  def request(%Request{} = req) do
     req
     |> AccessToken.maybe_set_access_token()
     |> Client.request()

@@ -1,7 +1,7 @@
 defmodule CozyLark.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.3.0"
   @description "An SDK builder of Lark Open Platform / Feishu Open Platform."
   @source_url "https://github.com/cozy-elixir/cozy_lark"
 

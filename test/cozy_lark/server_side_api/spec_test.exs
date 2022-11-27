@@ -3,7 +3,7 @@ defmodule CozyLark.ServerSideAPI.SpecTest do
   alias CozyLark.ServerSideAPI.Spec
 
   describe "build!/1" do
-    test "creates an %Spec{} struct" do
+    test "creates a struct %Spec{}" do
       assert %Spec{access_token_type: _, method: _, path: _, query: _, headers: _, body: _} =
                Spec.build!(%{
                  access_token_type: :app_access_token,
@@ -12,7 +12,7 @@ defmodule CozyLark.ServerSideAPI.SpecTest do
                })
     end
 
-    test "raises ArgumentError when required keys are missing" do
+    test "raises missing required keys" do
       assert_raise ArgumentError,
                    "key :access_token_type, :method, :path are required",
                    fn ->
@@ -20,7 +20,7 @@ defmodule CozyLark.ServerSideAPI.SpecTest do
                    end
     end
 
-    test "raises ArgumentError when access_token_type is unknown" do
+    test "raises invalid access_token_type" do
       assert_raise ArgumentError,
                    "unknown value of key :access_token_type - :unknown_access_token",
                    fn ->

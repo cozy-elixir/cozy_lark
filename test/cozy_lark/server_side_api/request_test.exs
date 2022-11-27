@@ -5,7 +5,7 @@ defmodule CozyLark.ServerSideAPI.RequestTest do
   alias CozyLark.ServerSideAPI.Request
 
   describe "build!/1" do
-    test "builds a %Request{} struct" do
+    test "builds a struct %Request{}" do
       config =
         Config.new!(%{
           platform: :lark,

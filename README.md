@@ -12,7 +12,7 @@ This package is an SDK builder. It provides utilities to reduce the cost of crea
 
 ## Installation
 
-Adding `cozy_lark` to your list of dependencies in `mix.exs`:
+Add `cozy_lark` to the list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do

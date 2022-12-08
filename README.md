@@ -17,7 +17,7 @@ Adding `cozy_lark` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:cozy_lark, "~> 0.3.0"}
+    {:cozy_lark, version}
   ]
 end
 ```

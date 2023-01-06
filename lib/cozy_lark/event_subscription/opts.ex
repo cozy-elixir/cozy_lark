@@ -1,9 +1,35 @@
 defmodule CozyLark.EventSubscription.Opts do
+  @moduledoc """
+  Currently, only option `security_verification_method` is supported.
+
+  ## Available options
+
+  + `security_verification_method` - specify the method to verify that the event is sent by
+    Lark Open Platform and not a forgery.
+
+  """
+
   @enforce_keys [:security_verification_method]
   defstruct @enforce_keys
 
   alias CozyLark.EventSubscription.Config
 
+  @type signature_factors() :: %{
+          raw_body: String.t(),
+          timestamp: String.t(),
+          nonce: String.t(),
+          signature: String.t()
+        }
+
+  @type opts() :: [
+          security_verification_method: :verification_token | {:signature, signature_factors()}
+        ]
+
+  @type t :: %__MODULE__{
+          security_verification_method: :verification_token | {:signature, signature_factors()}
+        }
+
+  @spec validate_opts!(opts(), Config.t()) :: t()
   def validate_opts!(opts, %Config{} = config) when is_list(opts) do
     opts
     |> cast_opts()

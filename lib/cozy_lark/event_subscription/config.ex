@@ -5,9 +5,26 @@ defmodule CozyLark.EventSubscription.Config do
     :encrypt_key
   ]
 
-  def validate_config!(config) when is_map(config) do
+  @type config() :: %{
+          verification_token: String.t() | nil,
+          encrypt_key: String.t() | nil
+        }
+
+  @type t :: %__MODULE__{
+          verification_token: String.t() | nil,
+          encrypt_key: String.t() | nil
+        }
+
+  @spec new!(config()) :: t()
+  def new!(config) do
     config
-    |> Map.take([:verification_token, :encrypt_key])
-    |> then(&struct(__MODULE__, &1))
+    |> as_struct!()
+  end
+
+  defp as_struct!(config) do
+    default_struct = __MODULE__.__struct__()
+    valid_keys = Map.keys(default_struct)
+    config = Map.take(config, valid_keys)
+    Map.merge(default_struct, config)
   end
 end

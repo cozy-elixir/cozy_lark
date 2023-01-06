@@ -7,73 +7,57 @@ defmodule CozyLark.EventSubscription do
 
   Read more at [Subscribe to events](https://open.feishu.cn/document/ukTMukTMukTM/uUTNz4SN1MjL1UzM).
 
-  # Overview
+  > #### WARNING {: .warning}
+  >
+  > Only the V2.0 events are supported.
 
-  ## subscription process
+  ## Basic concepts
 
-  1. setup `verification_token`
-  2. setup `encrypt_key`
-  3. configure the request URL
-  4. add events
-  5. apply for scopes
-  6. receive and process events
+  ### the process of subscription
 
-  Utilities provided by this module can be used at step 3 and 6.
+  1. setup `verification_token` and `encrypt_key`
+  2. configure the request URL
+  3. add events
+  4. apply for scopes
+  5. receive and process events
 
-  ## supported events
+  Utilities provided by this module can be used at:
+
+  + step 2
+  + step 6
+
+  ### supported events
 
   The full list of events can be found at
   [Getting Started - Event list](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-list).
 
-  Only the V2.0 events are supported.
+  ## Usage
 
-  # Usage
+      defmodule Demo.EventHandler do
+        alias CozyLark.EventSubscription
+        alias CozyLark.EventSubscriptionConfig
 
-     alias CozyLark.EventSubscription
-     EventSubscription.process_event(payload, config, opts)
+        def process_event(payload) do
+          EventSubscription.receive_event(config(), payload,
+            security_verification_method: :verification_token
+          )
+        end
 
-  ## about `config`
+        def config() do
+          :demo
+          |> Application.fetch_env!(__MODULE__)
+          |> Enum.into(%{})
+          |> Config.new!()
+        end
 
-  It's a map with following keys:
-  + `verification_token`
-  + `encrypt_key`
+      end
 
-  ## about `opts`
+      # config/runtime.exs
+      config :demo, Demo.EventHandler,
+        verification_token: System.fetch_env!("FEISHU_EVENT_SUBSCRIPTION_VERIFICATION_TOKEN")
+        encrypt_key: System.fetch_env!("FEISHU_EVENT_SUBSCRIPTION_ENCRYPT_KEY")
 
-  It's a keyword list with following keys:
-  + `security_verification_method` - specify the method to verify that the event is sent by
-    Lark Open Platform and not a forgery. Available values are:
-    - `verification_token`
-    - `{:signature, factors}` where the `factors` is a map with following keys:
-      + `raw_body`
-      + `timestamp`
-      + `nonce`
-      + `signature`
-
-  ## examples
-
-  Verify event by `:verification_token` method, and process event:
-
-     process_event(
-       payload,
-       %{verification_token: "...", encrypt_key: "..."},
-       security_verification_method: :verification_token
-     )
-
-  Verify event by `:signature` method, and process event:
-
-     process_event(
-       payload,
-       %{verification_token: "...", encrypt_key: "..."},
-       security_verification_method: {:signature, %{
-         raw_body: "...",
-         timestamp: "...",
-         nonce: "...",
-         signature: "..."
-       }}
-     )
-
-  # More details
+  ## More details
 
   + [Event processing method - Security verification](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-subscription-configure-/encrypt-key-encryption-configuration-case?lang=en-US#d41e8916).
   + [Event processing method - Event decryption](https://open.feishu.cn/document/ukTMukTMukTM/uYDNxYjL2QTM24iN0EjN/event-subscription-configure-/encrypt-key-encryption-configuration-case?lang=en-US#58c980bc).
@@ -84,9 +68,16 @@ defmodule CozyLark.EventSubscription do
   alias __MODULE__.Config
   alias __MODULE__.Opts
 
-  def receive_event(config, %{"encrypt" => encrypted_data} = _payload, opts)
-      when is_map(config) do
-    config = Config.validate_config!(config)
+  @type payload() :: map()
+  @type response() ::
+          {:ok, {:challenge, String.t()}}
+          | {:ok, {:event, Event.t()}}
+          | {:error, {:unknown_event, term()}}
+          | {:error, :bad_verification_token}
+          | {:error, :bad_signature}
+
+  @spec receive_event(Config.t(), payload(), Opts.opts()) :: response()
+  def receive_event(%Config{} = config, %{"encrypt" => encrypted_data} = _payload, opts) do
     opts = Opts.validate_opts!(opts, config)
 
     encrypt_key = config.encrypt_key
@@ -104,6 +95,8 @@ defmodule CozyLark.EventSubscription do
   end
 
   def receive_event(config, payload, opts) when is_map(config) do
+    opts = Opts.validate_opts!(opts, config)
+
     with :ok <- post_verify_event(config, opts, payload) do
       respond(payload)
     end

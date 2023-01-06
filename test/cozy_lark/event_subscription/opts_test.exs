@@ -5,7 +5,7 @@ defmodule CozyLark.EventSubscription.OptsTest do
 
   describe "validate_opts!/2" do
     test "checks opts - option :security_verification_method is missing" do
-      config = Config.validate_config!(%{})
+      config = Config.new!(%{})
 
       assert_raise ArgumentError,
                    "unknown value of option :security_verification_method - nil",
@@ -18,7 +18,7 @@ defmodule CozyLark.EventSubscription.OptsTest do
     end
 
     test "checks config - option [security_verification_method: :verification_token] requires config :verification_token" do
-      config = Config.validate_config!(%{})
+      config = Config.new!(%{})
 
       assert_raise ArgumentError,
                    "option [security_verification_method: :verification_token] requires config :verfication_token",
@@ -31,7 +31,7 @@ defmodule CozyLark.EventSubscription.OptsTest do
     end
 
     test "checks config - option [security_verification_method: :signature] requires config :verification_token and :encrypt_key" do
-      config = Config.validate_config!(%{})
+      config = Config.new!(%{})
 
       assert_raise ArgumentError,
                    "option [security_verification_method: {:signature, _}] requires config :verfication_token and :encrypt_key",
@@ -63,7 +63,7 @@ defmodule CozyLark.EventSubscription.OptsTest do
         """)
 
       config =
-        Config.validate_config!(%{
+        Config.new!(%{
           verification_token: "example_verification_token",
           encrypt_key: "example_encrypt_key"
         })
@@ -83,7 +83,7 @@ defmodule CozyLark.EventSubscription.OptsTest do
 
     test "works as expected for [security_verification_method: :verification_token]" do
       config =
-        Config.validate_config!(%{
+        Config.new!(%{
           verification_token: "example_verification_token"
         })
 
@@ -93,7 +93,7 @@ defmodule CozyLark.EventSubscription.OptsTest do
 
     test "works as expected for [security_verification_method: :signature]" do
       config =
-        Config.validate_config!(%{
+        Config.new!(%{
           verification_token: "example_verification_token",
           encrypt_key: "example_encrypt_key"
         })

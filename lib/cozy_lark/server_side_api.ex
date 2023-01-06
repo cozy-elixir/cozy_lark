@@ -9,6 +9,13 @@ defmodule CozyLark.ServerSideAPI do
 
   ## Usage
 
+  First, setup a HTTP client by following:
+
+  + `CozyLark.ServerSideAPI.Client`
+  + `CozyLark.ServerSideAPI.Client.Finch`
+
+  Then, create a dedicated module according to your requirements:
+
       defmodule Demo.GroupManager do
         alias CozyLark.ServerSideAPI
         alias CozyLark.ServerSideAPI.Config

@@ -24,7 +24,7 @@ defmodule CozyLark.EventSubscription do
   Utilities provided by this module can be used at:
 
   + step 2
-  + step 6
+  + step 5
 
   ### supported events
 

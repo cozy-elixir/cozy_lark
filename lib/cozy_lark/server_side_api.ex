@@ -9,7 +9,7 @@ defmodule CozyLark.ServerSideAPI do
 
   ## Usage
 
-      defmodule GroupManager do
+      defmodule Demo.GroupManager do
         alias CozyLark.ServerSideAPI
         alias CozyLark.ServerSideAPI.Config
 
@@ -32,11 +32,11 @@ defmodule CozyLark.ServerSideAPI do
       end
 
       # config/runtime.exs
-      config :demo, GroupManager,
+      config :demo, Demo.GroupManager,
         platform: :feishu,
         app_type: :custom_app,
-        app_id: System.fetch_env!("COZY_LARK_APP_ID"),
-        app_secret: System.fetch_env!("COZY_LARK_APP_SECRET")
+        app_id: System.fetch_env!("FEISHU_APP_ID"),
+        app_secret: System.fetch_env!("FEISHU_APP_SECRET")
 
   """
 

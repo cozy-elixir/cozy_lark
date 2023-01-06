@@ -22,7 +22,7 @@ def deps do
 end
 ```
 
-For more information, see the [documentation](https://hexdocs.pm/cozy_lark).
+For more information, see the doc of [CozyLark](https://hexdocs.pm/cozy_lark/CozyLark.html) module.
 
 # License
 

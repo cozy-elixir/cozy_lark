@@ -25,9 +25,10 @@ defmodule CozyLark.ServerSideAPI.AccessToken do
     %{config: config} = req.private
     %{access_token_type: type} = req.meta
 
-    with {:ok, {access_token, _expire}} <- get_access_token(config, type) do
-      Request.set_header(req, "authorization", "Bearer #{access_token}")
-    else
+    case get_access_token(config, type) do
+      {:ok, {access_token, _expire}} ->
+        Request.set_header(req, "authorization", "Bearer #{access_token}")
+
       _ ->
         Logger.error("failed to get access token", app: "cozy_lark")
         req
@@ -40,21 +41,20 @@ defmodule CozyLark.ServerSideAPI.AccessToken do
     {spec, access_token_key, expire_key} =
       get_spec({config.app_type, type}, config.app_id, config.app_secret)
 
-    response =
-      spec
-      |> then(&Request.build!(config, &1))
-      |> Client.request()
+    spec
+    |> then(&Request.build!(config, &1))
+    |> Client.request()
+    |> case do
+      {
+        :ok,
+        200,
+        _headers,
+        %{"code" => 0, ^access_token_key => access_token, ^expire_key => expire}
+      } ->
+        {:ok, {access_token, expire}}
 
-    with {
-           :ok,
-           200,
-           _headers,
-           %{"code" => 0, ^access_token_key => access_token, ^expire_key => expire}
-         } <-
-           response do
-      {:ok, {access_token, expire}}
-    else
-      _ -> {:error, :failed_to_get_access_token}
+      _ ->
+        {:error, :failed_to_get_access_token}
     end
   end
 

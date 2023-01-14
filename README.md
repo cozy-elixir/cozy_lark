@@ -1,5 +1,7 @@
 # CozyLark
 
+[![CI](https://github.com/cozy-elixir/cozy_lark/actions/workflows/ci.yml/badge.svg)](https://github.com/cozy-elixir/cozy_lark/actions/workflows/ci.yml)
+
 > An SDK builder for [Lark](https://www.larksuite.com/) Open Platform / [Feishu](https://www.feishu.cn/) Open Platform.
 
 This package is an SDK builder. It provides utilities to reduce the cost of creating an SDK, such as:

@@ -36,8 +36,6 @@ defmodule CozyLark.ServerSideAPI.AccessToken do
   end
 
   def get_access_token(%Config{} = config, type) do
-    # TODO: cache access_token based on {config, type}
-
     {spec, access_token_key, expire_key} =
       get_spec({config.app_type, type}, config.app_id, config.app_secret)
 

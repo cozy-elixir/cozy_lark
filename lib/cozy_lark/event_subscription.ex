@@ -35,7 +35,7 @@ defmodule CozyLark.EventSubscription do
 
       defmodule Demo.EventHandler do
         alias CozyLark.EventSubscription
-        alias CozyLark.EventSubscriptionConfig
+        alias CozyLark.EventSubscription.Config
 
         def process_event(payload) do
           EventSubscription.receive_event(config(), payload,

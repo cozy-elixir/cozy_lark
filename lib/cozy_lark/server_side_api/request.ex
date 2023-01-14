@@ -1,6 +1,6 @@
 defmodule CozyLark.ServerSideAPI.Request do
   @moduledoc """
-
+  Converts a spec to a request.
   """
 
   defstruct [

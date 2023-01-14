@@ -52,12 +52,12 @@ defmodule CozyLark.ServerSideAPI.Spec do
   @type body() :: map() | nil
 
   @type config() :: %{
-          access_token_type: nil,
-          method: method(),
-          path: path(),
-          query: query(),
-          headers: headers(),
-          body: body()
+          :access_token_type => access_token_type(),
+          :method => method(),
+          :path => path(),
+          optional(:query) => query(),
+          optional(:headers) => headers(),
+          optional(:body) => body()
         }
 
   @type t :: %__MODULE__{

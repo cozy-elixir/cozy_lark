@@ -1,4 +1,8 @@
 defmodule CozyLark.ServerSideAPI.Config do
+  @moduledoc """
+  Provides config for server-side API.
+  """
+
   @enforce_keys [:platform, :app_type, :app_id, :app_secret]
   defstruct @enforce_keys
 
@@ -16,6 +20,9 @@ defmodule CozyLark.ServerSideAPI.Config do
           app_secret: String.t()
         }
 
+  @doc """
+  Creates a config from a given map.
+  """
   @spec new!(config()) :: t()
   def new!(config) do
     config

@@ -1,4 +1,8 @@
 defmodule CozyLark.EventSubscription.Event do
+  @moduledoc """
+  Provides the struct for shaping events.
+  """
+
   @enforce_keys [
     :id,
     :type,
@@ -25,6 +29,9 @@ defmodule CozyLark.EventSubscription.Event do
           meta: map()
         }
 
+  @doc """
+  Creates a event from a given map.
+  """
   @spec new(args()) :: t()
   def new(args) do
     struct(__MODULE__, args)

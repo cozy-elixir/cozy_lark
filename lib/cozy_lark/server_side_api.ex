@@ -70,6 +70,7 @@ defmodule CozyLark.ServerSideAPI do
 
   Before sending the request, this function will try to set access token on the request automatically.
   """
+  @spec request(Request.t()) :: Client.response()
   def request(%Request{} = req) do
     req
     |> AccessToken.maybe_set_access_token()

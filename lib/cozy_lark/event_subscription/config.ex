@@ -1,4 +1,8 @@
 defmodule CozyLark.EventSubscription.Config do
+  @moduledoc """
+  Provides config for event subscription.
+  """
+
   @enforce_keys [:verification_token]
   defstruct [
     :verification_token,
@@ -15,6 +19,9 @@ defmodule CozyLark.EventSubscription.Config do
           encrypt_key: String.t() | nil
         }
 
+  @doc """
+  Creates a config from a given map.
+  """
   @spec new!(config()) :: t()
   def new!(config) do
     config

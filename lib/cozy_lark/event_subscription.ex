@@ -152,15 +152,19 @@ defmodule CozyLark.EventSubscription do
 
   @doc false
   def decrypt_event(encrypt_key, encrypted_data) when is_binary(encrypted_data) do
-    key = :crypto.hash(:sha256, encrypt_key)
-    <<iv::binary-size(16), encrypted_event::binary>> = Base.decode64!(encrypted_data)
+    try do
+      key = :crypto.hash(:sha256, encrypt_key)
+      <<iv::binary-size(16), encrypted_event::binary>> = Base.decode64!(encrypted_data)
 
-    case :crypto.crypto_one_time(:aes_256_cbc, key, iv, encrypted_event,
-           encrypt: false,
-           padding: :pkcs_padding
-         ) do
-      result when is_binary(result) -> {:ok, result}
-      other -> other
+      result =
+        :crypto.crypto_one_time(:aes_256_cbc, key, iv, encrypted_event,
+          encrypt: false,
+          padding: :pkcs_padding
+        )
+
+      {:ok, result}
+    rescue
+      _ -> :error
     end
   end
 

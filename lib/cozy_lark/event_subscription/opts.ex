@@ -29,6 +29,7 @@ defmodule CozyLark.EventSubscription.Opts do
           security_verification_method: :verification_token | {:signature, signature_factors()}
         }
 
+  @doc false
   @spec validate_opts!(opts(), Config.t()) :: t()
   def validate_opts!(opts, %Config{} = config) when is_list(opts) do
     opts

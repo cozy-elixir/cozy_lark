@@ -21,6 +21,8 @@ defmodule CozyLark.ServerSideAPI.AccessToken do
   alias CozyLark.ServerSideAPI.Request
   alias CozyLark.ServerSideAPI.Client
 
+  @doc false
+  @spec maybe_set_access_token(Request.t()) :: Request.t()
   def maybe_set_access_token(%Request{} = req) do
     %{config: config} = req.private
     %{access_token_type: type} = req.meta
@@ -35,7 +37,7 @@ defmodule CozyLark.ServerSideAPI.AccessToken do
     end
   end
 
-  def get_access_token(%Config{} = config, type) do
+  defp get_access_token(%Config{} = config, type) do
     {spec, access_token_key, expire_key} =
       get_spec({config.app_type, type}, config.app_id, config.app_secret)
 

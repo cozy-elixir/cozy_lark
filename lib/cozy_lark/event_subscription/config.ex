@@ -1,6 +1,6 @@
 defmodule CozyLark.EventSubscription.Config do
   @moduledoc """
-  Provides config for event subscription.
+  Provides config for event subscriptions.
   """
 
   @enforce_keys [:verification_token]

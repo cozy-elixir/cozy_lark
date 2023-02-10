@@ -7,8 +7,8 @@
 This package is an SDK builder. It provides utilities to reduce the cost of creating an SDK, such as:
 
 - building server-side API requests
-- handling event subscription
-- getting access token
+- handling event subscriptions
+- getting access tokens
 - converting the JSON string in the response to a map
 - ...
 

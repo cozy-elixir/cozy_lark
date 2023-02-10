@@ -7,7 +7,7 @@ defmodule CozyLark do
   + calling server-side API
   + subscribing events
 
-  `CozyLark` provides support for above processes by following modules:
+  `CozyLark` provides supports for above processes by following modules:
 
   + `CozyLark.ServerSideAPI`
   + `CozyLark.EventSubscription`

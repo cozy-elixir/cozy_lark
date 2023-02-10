@@ -9,7 +9,7 @@ defmodule CozyLark.ServerSideAPI do
 
   ## Usage
 
-  First, setup a HTTP client by following:
+  First, setup an HTTP client by following:
 
   + `CozyLark.ServerSideAPI.Client`
   + `CozyLark.ServerSideAPI.Client.Finch`

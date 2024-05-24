@@ -1,3 +1,5 @@
+> This package is not maintained. Considering that my former employers might still be using it, the repository will not be cleaned up, only archived.
+
 # CozyLark
 
 [![CI](https://github.com/cozy-elixir/cozy_lark/actions/workflows/ci.yml/badge.svg)](https://github.com/cozy-elixir/cozy_lark/actions/workflows/ci.yml) [![Hex.pm](https://img.shields.io/hexpm/v/cozy_lark.svg)](https://hex.pm/packages/cozy_lark)
